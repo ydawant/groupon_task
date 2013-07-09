@@ -6,8 +6,7 @@ class Player
 	end
 
 	def pick_next_move(die, current_score)
-		possible_moves = die.possible_moves
-		puts "please pick between #{possible_moves}:"
+		puts "please pick between #{die.possible_moves}:"
 		choice = gets.chomp.to_i
 		if die.valid_choice(choice)
 			die.current_face = choice
@@ -44,15 +43,12 @@ end
 
 class Computer
 
-	def next_move(die, current_face)
-		points_left = 31 - current_face
+	def next_move(die, current_score)
+		points_left = 31 - current_score
 		puts "computer must pick between #{die.possible_moves}: "
-		sleep(1)
-		if die.possible_moves.select { |x| x == points_left }.empty?
-			computer_pick = die.possible_moves.sample
-		else
-			computer_pick = die.possible_moves.select { |x| x == points_left }.first
-		end 
+		sleep(0.5)
+		computer_pick = die.possible_moves.select { |x| x == points_left }.first
+		computer_pick.nil? ? computer_pick = die.possible_moves.sample : computer_pick
 		die.current_face = computer_pick 
 		puts "the computer chose #{computer_pick}"
 		computer_pick
@@ -74,22 +70,24 @@ class Game
 		play_game
 	end
 
+	def computer_play
+		@current_score += @computer.next_move(@die, @current_score)
+	end
+
+	def player_play
+		@current_score += @player.pick_next_move(@die, @current_score)
+	end
+
 	def play_game
 		until @current_score >= 31
-			@current_score += @computer.next_move(@die, @current_score)
+			computer_play
 			if @current_score > 31
 				puts "#{@player.name} wins!"
 			elsif @current_score == 31
-				puts "computer wins!"
+				puts "Computer wins!"
 			else
 				puts "The current score is #{@current_score}"	
-				@current_score += @player.pick_next_move(@die, @current_score)
-				if @current_score > 31
-					puts "Computer wins!"
-				elsif @current_score == 31
-					puts "#{@player.name} wins!"
-				else
-				end
+				player_play
 			end
 		end
 	end
