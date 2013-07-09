@@ -33,9 +33,19 @@ class Game
 
 	def pick_next_move
 		possible_moves = @die.possible_moves(@current_face)
-		puts "please pick between #{possible_moves}: "
-		@current_face = gets.chomp.to_i
-		@current_score += @current_face
+		puts "please pick between #{possible_moves}:"
+		choice = gets.chomp.to_i
+		if valid_choice(possible_moves, choice)
+			@current_face = choice
+			@current_score += choice
+		else
+			puts "Pick a valid number!"
+			pick_next_move
+		end
+	end
+
+	def valid_choice(possible_moves, choice)
+		possible_moves.any? { |x| x == choice }
 	end
 
 	def computer_next_move
