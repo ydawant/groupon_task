@@ -1,4 +1,5 @@
 class Player
+
 	attr_reader :name
 
 	def initialize(name)
@@ -53,21 +54,22 @@ class Computer
 			computer_pick = die.possible_moves.sample
 			die.current_face = computer_pick 
 		end
-			puts "the computer chose #{computer_pick}"
-			computer_pick
-	end
+   puts "the computer chose #{computer_pick}"
+   computer_pick
+ end
 
-	def can_win?(die, points_left)
-		die.possible_moves.any? { |x| x == points_left }
-	end
+ def can_win?(die, points_left)
+  die.possible_moves.any? { |x| x == points_left }
+end
 
-	def pick_winning_number(die, points_left)
-		die.possible_moves.select { |x| x == points_left }.first
-	end
+def pick_winning_number(die, points_left)
+  die.possible_moves.select { |x| x == points_left }.first
+end
 
 end
 
 class Game
+  
 	attr_accessor :current_score
 
 	def initialize
