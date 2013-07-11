@@ -15,8 +15,10 @@ describe 'Player' do
 
 	it "should not allow for a wrong number to be chosen" do
 		@player.stub!(:gets).and_return('7', '5')
-		@player.pick_next_move(@die, 5)
-		@player.should print "Pick a valid number!"
+		printed = capture_out do
+			@player.pick_next_move(@die, 5)
+		end
+		expect(printed.chomp).to eq("please pick between [2, 3, 4, 5]:\nPick a valid number!\nplease pick between [2, 3, 4, 5]:")
 	end
 
 	it "should return the chosen number if valid" do
@@ -88,25 +90,30 @@ describe 'Computer' do
 	end
 end
 
-	describe 'Game' do
+describe 'Game' do
 
-		before do
-			@player = Player.new("John")
-			@game = Game.new
-		end
+	before do
+		@game = Game.new
+	end
 
 	it "should be able to determine if the computer DID NOT ended the game" do
 		@game.computer_game_over?.should eq nil
 	end
 
 	it "should be able to determine if the computer ended and WON the game" do
-		@current_score = 31
-		@game.computer_game_over?.should print "Computer wins!"
+		@game.current_score = 31
+		printed = capture_out do
+			@game.computer_game_over?
+		end
+		expect(printed.chomp).to eq("Computer wins!")
 	end
 
 	it "should be able to determine if the computer ended and LOST the game" do
-		@current_score = 32
-		@game.computer_game_over?.should print "John wins!"
+		@game.current_score = 32
+		printed = capture_out do
+			@game.computer_game_over?
+		end
+		expect(printed.chomp).to eq(" wins!")
 	end
 
 	it "should be able to determine if the player DID NOT end the game" do
@@ -114,15 +121,31 @@ end
 	end
 
 	it "should be able to determine if the player ended and WON the game" do
-		@current_score = 31
-		@game.player_game_over?.should print "John wins!"
+		@game.current_score = 31
+		printed = capture_out do
+			@game.player_game_over?
+		end
+		expect(printed.chomp).to eq(" wins!")
 	end
 
 	it "should be able to determine if the player ended and LOST the game" do
-		@current_score = 32
-		@game.player_game_over?.should print "Computer wins!"
+		@game.current_score = 32
+		printed = capture_out do
+			@game.player_game_over?
+		end
+		expect(printed.chomp).to eq("Computer wins!")
 	end
 
+end
+
+def capture_out(&block)
+	old_stdout = $stdout
+	fake_stdout = StringIO.new
+	$stdout = fake_stdout
+	block.call
+	fake_stdout.string
+ensure
+	$stdout = old_stdout
 end
 
 

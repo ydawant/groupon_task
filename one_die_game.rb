@@ -53,8 +53,8 @@ class Computer
 			computer_pick = die.possible_moves.sample
 			die.current_face = computer_pick 
 		end
-		puts "the computer chose #{computer_pick}"
-		computer_pick
+			puts "the computer chose #{computer_pick}"
+			computer_pick
 	end
 
 	def can_win?(die, points_left)
@@ -68,6 +68,7 @@ class Computer
 end
 
 class Game
+	attr_accessor :current_score
 
 	def initialize
 		p "Welcome, challenger. Please enter your name:"
@@ -104,17 +105,17 @@ class Game
 
 	def computer_game_over?
 		if @current_score > 31
-			p "#{@player.name} wins!"
+			puts "#{@player.name} wins!"
 		elsif @current_score == 31
-			p "Computer wins!"
+			puts "Computer wins!"
 		end
 	end
 
 	def player_game_over?
 		if @current_score > 31
-			p"Computer wins!"
+			puts "Computer wins!"
 		elsif @current_score == 31
-			p "#{@player.name} wins!"
+			puts "#{@player.name} wins!"
 		end
 	end
 
