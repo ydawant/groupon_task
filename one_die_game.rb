@@ -118,7 +118,7 @@ class Game
 			puts "#{@player.name} wins!"
 		end
 	end
-
+	
 end
 
 
