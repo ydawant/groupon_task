@@ -45,13 +45,24 @@ class Computer
 
 	def next_move(die, current_score)
 		points_left = 31 - current_score
-		puts "computer must pick between #{die.possible_moves}: "
+		puts "computer must pick between #{die.possible_moves}:"
 		sleep(0.5)
-		computer_pick = die.possible_moves.select { |x| x == points_left }.first
-		computer_pick.nil? ? computer_pick = die.possible_moves.sample : computer_pick
-		die.current_face = computer_pick 
+		if can_win?(die, points_left)
+			computer_pick = pick_winning_number(die, points_left)
+		else
+			computer_pick = die.possible_moves.sample
+			die.current_face = computer_pick 
+		end
 		puts "the computer chose #{computer_pick}"
 		computer_pick
+	end
+
+	def can_win?(die, points_left)
+		die.possible_moves.any? { |x| x == points_left }
+	end
+
+	def pick_winning_number(die, points_left)
+		die.possible_moves.select { |x| x == points_left }.first
 	end
 
 end
@@ -59,7 +70,7 @@ end
 class Game
 
 	def initialize
-		p "Welcome, challenger. Please enter your name: "
+		p "Welcome, challenger. Please enter your name:"
 		name = gets.chomp
 		@player = Player.new(name)
 		@die = Die.new
@@ -67,7 +78,6 @@ class Game
 		@max_score = 31
 		@current_score = @die.current_face
 		puts "#{@player.name} has started the game with a #{@current_score}"
-		play_game
 	end
 
 	def computer_play
@@ -81,17 +91,38 @@ class Game
 	def play_game
 		until @current_score >= 31
 			computer_play
-			if @current_score > 31
-				puts "#{@player.name} wins!"
-			elsif @current_score == 31
-				puts "Computer wins!"
-			else
-				puts "The current score is #{@current_score}"	
-				player_play
+			if computer_game_over?
+				break
 			end
+			puts "The current score is #{@current_score}"	
+			player_play
+			if player_game_over?
+				break
+			end
+		end
+	end
+
+	def computer_game_over?
+		if @current_score > 31
+			p "#{@player.name} wins!"
+		elsif @current_score == 31
+			p "Computer wins!"
+		end
+	end
+
+	def player_game_over?
+		if @current_score > 31
+			p"Computer wins!"
+		elsif @current_score == 31
+			p "#{@player.name} wins!"
 		end
 	end
 
 end
 
-Game.new
+
+if $PROGRAM_NAME == __FILE__
+	game = Game.new
+	game.play_game
+end
+
