@@ -6,16 +6,23 @@ describe 'Player' do
 	before do
 		@player = Player.new("Yannick") 
 		@die = Die.new
+		@die.current_face = 6
 	end
 
 	it "should require a name as input" do
 		expect {Player.new}.to raise_exception
 	end
 
-	# it "should not allow for a wrong number to be chosen" do
-	# 	player.pick_next_move(@die, 5)
-	# 	STDIN.should_receive(:).with("Pick a valid number!")
-	# end
+	it "should not allow for a wrong number to be chosen" do
+		@player.stub!(:gets).and_return('7', '5')
+		@player.pick_next_move(@die, 5)
+		@player.should print "Pick a valid number!"
+	end
+
+	it "should return the chosen number if valid" do
+		@player.stub!(:gets).and_return('5')
+		@player.pick_next_move(@die, 5).should eq 5
+	end
 end
 
 describe 'Die' do
